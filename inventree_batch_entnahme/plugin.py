@@ -96,4 +96,3 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin, NavigationMixin):
 
         return JsonResponse({'success': True, 'results': results})
 
-    PLUGIN_URLS = setup_urls()
