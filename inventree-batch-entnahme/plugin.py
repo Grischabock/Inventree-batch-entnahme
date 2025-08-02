@@ -6,6 +6,8 @@ from django.shortcuts import render
 from stock.models import StockItem
 from stock.api import StockItemSerializer
 
+print("BatchEntnahmePlugin wird geladen")
+
 class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin):
     """
     Plugin für InvenTree: Ermöglicht Batch-Scannen und Sammel-Entnahme von Teilen aus dem Lager.
@@ -15,6 +17,9 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin):
     SLUG = "batch_entnahme"
     TITLE = "Batch Entnahme"
     DESCRIPTION = "Scanne mehrere Barcodes und buche alle auf einen Schlag aus."
+
+    VERSION = "1.0.0"
+    AUTHOR = "GrischaMedia"
 
     def setup_urls(self):
         return [
