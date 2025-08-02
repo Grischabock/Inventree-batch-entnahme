@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-from stock.serializers import StockItemSerializer
 
 setup(
      name="inventree-batch-entnahme",
