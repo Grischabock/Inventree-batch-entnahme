@@ -31,8 +31,11 @@
                         }
                         updateTable();
                     } else {
-                        alert(data.error);
+                        alert(data.error || 'Unbekannter Fehler beim Scannen');
                     }
+                })
+                .catch(err => {
+                    alert('Verbindungsfehler beim Scannen: ' + err.message);
                 });
             document.getElementById('scan-input').value = '';
         }
@@ -49,6 +52,9 @@
                 </tr>`;
                 tbody.innerHTML += row;
             }
+            document.getElementById('scan-counter').innerText = Object.keys(scannedItems).length > 0
+                ? Object.keys(scannedItems).length + ' Artikel gescannt.'
+                : 'Noch keine Artikel gescannt.';
         }
 
         function removeItem(id) {
@@ -82,6 +88,7 @@
 <body>
     <h1>Batch Entnahme</h1>
     <input id="scan-input" placeholder="Barcode scannen..." onkeydown="if(event.key==='Enter'){scanBarcode()}">
+    <p id="scan-counter" style="margin-top:5px;font-size:14px;color:#555;">Noch keine Artikel gescannt.</p>
     <table>
         <thead>
             <tr><th>ID</th><th>Name</th><th>Menge</th><th>Aktion</th></tr>
