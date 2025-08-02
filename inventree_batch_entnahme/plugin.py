@@ -1,5 +1,5 @@
 from plugin import InvenTreePlugin
-from plugin.mixins import UrlsMixin, NavigationMixin
+from plugin.mixins import UrlsMixin
 from django.urls import path
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
@@ -10,7 +10,7 @@ logger = logging.getLogger("inventree")
 
 logger.info("BatchEntnahmePlugin wird geladen")
 
-class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin, NavigationMixin):
+class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin):
     """
     Plugin für InvenTree: Ermöglicht Batch-Scannen und Sammel-Entnahme von Teilen aus dem Lager.
     
@@ -31,13 +31,6 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin, NavigationMixin):
 
     PLUGIN_URL = "batch-remove/"
 
-    NAVIGATION = [
-        {
-            "name": "Batch Entnahme",
-            "link": "plugin:batch_entnahme:batch_remove_page",
-            "icon": "fas fa-barcode",
-        }
-    ]
 
     MIN_VERSION = "0.12"
     MAX_VERSION = None
