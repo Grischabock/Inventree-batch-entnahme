@@ -1,7 +1,7 @@
 from plugin import InvenTreePlugin
 from plugin.mixins import UrlsMixin, NavigationMixin
 from django.urls import path
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from stock.models import StockItem
 from stock.serializers import StockItemSerializer
@@ -30,7 +30,8 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin, NavigationMixin):
         {
             "name": "Batch Entnahme",
             "link": "plugin:batch_entnahme:batch_remove_page",
-            "icon": "fas fa-barcode"
+            "icon": "fas fa-barcode",
+            "permissions": ["stock.view_stockitem"],
         }
     ]
 
@@ -50,10 +51,14 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin, NavigationMixin):
 
     def setup_urls(self):
         return [
+            path('batch-remove/test/', self.dummy_page, name='batch_remove_test'),
             path('batch-remove/', self.batch_page, name='batch_remove_page'),
             path('batch-remove/api/scan/', self.scan_barcode, name='batch_scan_api'),
             path('batch-remove/api/remove/', self.remove_stock, name='batch_remove_api'),
         ]
+
+    def dummy_page(self, request):
+        return HttpResponse("Batch-Entnahme Testseite – Plugin geladen!")
 
     def batch_page(self, request):
         return render(request, 'inventree-batch-entnahme/batch-entnahme.html', {})
@@ -90,3 +95,5 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin, NavigationMixin):
                 results.append({'id': entry.get('id'), 'qty': entry.get('qty'), 'status': f'Fehler: {str(e)}'})
 
         return JsonResponse({'success': True, 'results': results})
+
+    PLUGIN_URLS = setup_urls()
