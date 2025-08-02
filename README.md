@@ -1,7 +1,5 @@
 # 📦 Inventree Batch Entnahme Plugin
 
-![InvenTree](https://inventree.readthedocs.io/en/latest/_static/logo.png)
-
 Ein leistungsstarkes **Plugin für [InvenTree](https://inventree.readthedocs.io/en/latest/)**, mit dem du **mehrere Barcodes scannen** und die entsprechenden Artikel **in einem einzigen Schritt** aus dem Lager ausbuchen kannst. Ideal für effiziente Lagerbewegungen, Inventurprozesse oder schnelle Entnahmen.
 
 ---
