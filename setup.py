@@ -13,7 +13,7 @@ setup(
      include_package_data=True,
      entry_points={
          "inventree_plugins": [
-             "BatchEntnahmePlugin = inventree-batch-entnahme.plugin:BatchEntnahmePlugin"
+             "BatchEntnahmePlugin = inventree_batch_entnahme.plugin:BatchEntnahmePlugin"
          ]
      },
      package_data={
