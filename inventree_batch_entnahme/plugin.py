@@ -4,7 +4,7 @@ from django.urls import path
 from django.http import JsonResponse
 from django.shortcuts import render
 from stock.models import StockItem
-from stock.api import StockItemSerializer
+from stock.serializers import StockItemSerializer
 import logging
 logger = logging.getLogger("inventree")
 
