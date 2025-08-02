@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Entnahme</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { font-size: 24px; margin-bottom: 20px; }
+        #scan-input { width: 300px; padding: 10px; font-size: 16px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f0f0f0; }
+        button { padding: 10px 20px; font-size: 16px; margin-top: 20px; }
+    </style>
+    <script>
+        let scannedItems = {};
+
+        function scanBarcode() {
+            const code = document.getElementById('scan-input').value.trim();
+            if (!code) return;
+            fetch(`/plugin/batch-remove/api/scan/?barcode=${code}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        let item = data.item;
+                        if (!scannedItems[item.pk]) {
+                            scannedItems[item.pk] = {name: item.part_name, qty: 1};
+                        } else {
+                            scannedItems[item.pk].qty += 1;
+                        }
+                        updateTable();
+                    } else {
+                        alert(data.error);
+                    }
+                });
+            document.getElementById('scan-input').value = '';
+        }
+
+        function updateTable() {
+            let tbody = document.getElementById('scan-tbody');
+            tbody.innerHTML = '';
+            for (let id in scannedItems) {
+                let row = `<tr>
+                    <td>${id}</td>
+                    <td>${scannedItems[id].name}</td>
+                    <td><input type="number" value="${scannedItems[id].qty}" onchange="scannedItems[${id}].qty=this.value"></td>
+                    <td><button onclick="removeItem(${id})">Löschen</button></td>
+                </tr>`;
+                tbody.innerHTML += row;
+            }
+        }
+
+        function removeItem(id) {
+            delete scannedItems[id];
+            updateTable();
+        }
+
+        function removeAllStock() {
+            let payload = [];
+            for (let id in scannedItems) {
+                payload.push({id: id, qty: scannedItems[id].qty});
+            }
+            fetch('/plugin/batch-remove/api/remove/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Alle Artikel ausgebucht!');
+                    scannedItems = {};
+                    updateTable();
+                } else {
+                    alert('Fehler: ' + data.error);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Batch Entnahme</h1>
+    <input id="scan-input" placeholder="Barcode scannen..." onkeydown="if(event.key==='Enter'){scanBarcode()}">
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Name</th><th>Menge</th><th>Aktion</th></tr>
+        </thead>
+        <tbody id="scan-tbody"></tbody>
+    </table>
+    <button onclick="removeAllStock()">Alle entnehmen</button>
+</body>
+</html>
