@@ -56,7 +56,7 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin, NavigationMixin):
         ]
 
     def batch_page(self, request):
-        return render(request, 'inventree_batch_entnahme/batch_entnahme.html', {})
+        return render(request, 'inventree-batch-entnahme/batch-entnahme.html', {})
 
     def scan_barcode(self, request):
         barcode = request.GET.get('barcode', None)
