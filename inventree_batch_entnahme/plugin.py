@@ -23,7 +23,12 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin, NavigationMixin):
     NAME = "Batch Entnahme"
     SLUG = "batch_entnahme"
     TITLE = "Batch Entnahme"
+    AUTHOR = "GrischaMedia"
     DESCRIPTION = "Scanne mehrere Barcodes und buche alle auf einen Schlag aus."
+    VERSION = "1.0.3"
+    WEBSITE = "https://github.com/Grischabock/Inventree-batch-entnahme"
+    LICENSE = "MIT"
+
     PLUGIN_URL = "batch-remove/"
 
     NAVIGATION = [
@@ -31,12 +36,9 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin, NavigationMixin):
             "name": "Batch Entnahme",
             "link": "plugin:batch_entnahme:batch_remove_page",
             "icon": "fas fa-barcode",
-            "permissions": ["stock.view_stockitem"],
         }
     ]
 
-    VERSION = "1.0.2"
-    AUTHOR = "GrischaMedia"
     MIN_VERSION = "0.12"
     MAX_VERSION = None
 
@@ -95,4 +97,3 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin, NavigationMixin):
                 results.append({'id': entry.get('id'), 'qty': entry.get('qty'), 'status': f'Fehler: {str(e)}'})
 
         return JsonResponse({'success': True, 'results': results})
-
