@@ -5,6 +5,7 @@ setup(
     version="1.0.0",
     author="GrischaMedia",
     author_email="info@grischamedia.ch",
+    license="MIT",
     description="Inventree Plugin für Batch-Entnahme: Mehrere Barcodes scannen und gesammelt ausbuchen.",
     long_description="Ein Inventree-Plugin, das eine Maske für das Scannen mehrerer Barcodes bietet. Die gescannten Artikel können anschließend gesammelt aus dem Lager ausgebucht werden.",
     long_description_content_type="text/markdown",
@@ -18,4 +19,9 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.7',
+    entry_points={
+        "inventree_plugins": [
+            "BatchEntnahmePlugin = inventree_batch_entnahme.plugin:BatchEntnahmePlugin"
+        ]
+    },
 )

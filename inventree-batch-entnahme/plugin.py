@@ -5,21 +5,40 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from stock.models import StockItem
 from stock.api import StockItemSerializer
+import logging
+logger = logging.getLogger("inventree")
 
-print("BatchEntnahmePlugin wird geladen")
+logger.info("BatchEntnahmePlugin wird geladen")
 
 class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin):
     """
     Plugin für InvenTree: Ermöglicht Batch-Scannen und Sammel-Entnahme von Teilen aus dem Lager.
+    
+    Nutzung:
+    - Unter Menüpunkt „Batch Entnahme“ können mehrere Barcodes nacheinander gescannt werden.
+    - Alle gescannten Artikel werden gesammelt angezeigt.
+    - Mit einem Klick auf „Alle entnehmen“ wird der gesamte Bestand ausgebucht.
     """
 
     NAME = "Batch Entnahme"
     SLUG = "batch_entnahme"
     TITLE = "Batch Entnahme"
     DESCRIPTION = "Scanne mehrere Barcodes und buche alle auf einen Schlag aus."
+    PLUGIN_URL = "batch-remove/"
 
-    VERSION = "1.0.0"
+    VERSION = "1.0.1"
     AUTHOR = "GrischaMedia"
+    MIN_VERSION = "0.12"
+    MAX_VERSION = None
+
+    SETTINGS = {
+        'BATCH_MODE': {
+            'name': 'Batch Modus',
+            'description': 'Aktiviert den Batch-Modus für das Scannen',
+            'default': True,
+            'validator': bool
+        }
+    }
 
     def setup_urls(self):
         return [
@@ -29,7 +48,7 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin):
         ]
 
     def batch_page(self, request):
-        return render(request, 'batch_entnahme.html', {})
+        return render(request, 'inventree_batch_entnahme/batch_entnahme.html', {})
 
     def scan_barcode(self, request):
         barcode = request.GET.get('barcode', None)
@@ -37,9 +56,10 @@ class BatchEntnahmePlugin(InvenTreePlugin, UrlsMixin):
             return JsonResponse({'error': 'Kein Barcode übergeben'}, status=400)
 
         try:
-            item = StockItem.objects.get(pk=int(barcode.replace('SI-', '')))
-        except Exception:
-            return JsonResponse({'error': 'Teil nicht gefunden'}, status=404)
+            pk = int(barcode.replace('SI-', ''))
+            item = StockItem.objects.get(pk=pk)
+        except (ValueError, StockItem.DoesNotExist):
+            return JsonResponse({'error': 'Ungültiger Barcode oder Teil nicht gefunden'}, status=404)
 
         data = StockItemSerializer(item).data
         return JsonResponse({'success': True, 'item': data})
